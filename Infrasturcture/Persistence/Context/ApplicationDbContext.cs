@@ -13,6 +13,7 @@ namespace Infrasturcture.Persistence.Context
         public DbSet<SurveyParticipant> SurveyParticipants { get; set; }
         public DbSet<SurveyRoute> SurveyRoutes { get; set; }
         public DbSet<SurveyResponse> SurveyResponses { get; set; }
+        public DbSet<SurveyOption> SurveyOption { get; set; }
 
 
 

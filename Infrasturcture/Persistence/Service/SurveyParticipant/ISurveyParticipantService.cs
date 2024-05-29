@@ -1,4 +1,5 @@
 ﻿
+using Application.DTO;
 using Domain;
 
 namespace Infrasturcture.Persistence.Service
@@ -10,5 +11,6 @@ namespace Infrasturcture.Persistence.Service
         Task AddSurveyParticipantAsync(SurveyParticipant participant);
         Task UpdateSurveyParticipantAsync(SurveyParticipant participant);
         Task DeleteSurveyParticipantAsync(int id);
+        Task<IEnumerable<CombinedSurveyDataDTO>> GetAllCombinedSurveyDataAsync();
     }
 }

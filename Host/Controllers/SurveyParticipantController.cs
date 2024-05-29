@@ -3,6 +3,7 @@ using AutoMapper;
 using Domain;
 using Infrasturcture.Persistence.Service;
 using Microsoft.AspNetCore.Mvc;
+using OfficeOpenXml;
 
 namespace Host.Controllers
 {
@@ -90,6 +91,27 @@ namespace Host.Controllers
             {
                 return BadRequest(ex.Message);
             }
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportAllSurveyParticipantsDataToExcel()
+        {
+            
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var combinedSurveyData = await _surveyParticipantService.GetAllCombinedSurveyDataAsync();
+
+            var stream = new MemoryStream();
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets.Add("SurveyData");
+                worksheet.Cells.LoadFromCollection(combinedSurveyData, true);
+                package.Save();
+            }
+            stream.Position = 0;
+            string excelName = $"SurveyData-{DateTime.Now:yyyyMMddHHmmssfff}.xlsx";
+
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
         }
     }
 }
