@@ -93,7 +93,7 @@ namespace Host.Controllers
             }
         }
 
-        [HttpGet("export")]
+        [HttpGet("export-all")]
         public async Task<IActionResult> ExportAllSurveyParticipantsDataToExcel()
         {
             
@@ -110,6 +110,32 @@ namespace Host.Controllers
             }
             stream.Position = 0;
             string excelName = $"SurveyData-{DateTime.Now:yyyyMMddHHmmssfff}.xlsx";
+
+            return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
+        }
+
+        [HttpGet("export")]
+        public async Task<IActionResult> ExportByIdSurveyParticipantDataToExcel([FromQuery] int participantId)
+        {
+
+            ExcelPackage.LicenseContext = LicenseContext.NonCommercial;
+
+            var participantData = await _surveyParticipantService.GetByIdCombinedSurveyDataAsync(participantId);
+
+            if (participantData == null)
+            {
+                return NotFound();
+            }
+
+            var stream = new MemoryStream();
+            using (var package = new ExcelPackage(stream))
+            {
+                var worksheet = package.Workbook.Worksheets.Add($"SurveyData_{participantId}");
+                worksheet.Cells.LoadFromCollection(participantData, true);
+                package.Save();
+            }
+            stream.Position = 0;
+            string excelName = $"SurveyData_Participant_{participantId}-{DateTime.Now:yyyyMMddHHmmssfff}.xlsx";
 
             return File(stream, "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet", excelName);
         }

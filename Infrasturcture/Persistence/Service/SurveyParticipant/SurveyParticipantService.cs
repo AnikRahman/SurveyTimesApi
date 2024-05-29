@@ -77,5 +77,31 @@ namespace Infrasturcture.Persistence.Service
                               }).ToListAsync();
             return data;
         }
+
+        public async Task<IEnumerable<CombinedSurveyDataDTO>> GetByIdCombinedSurveyDataAsync(int participantId)
+        {
+            var data = await (from sp in _context.SurveyParticipants
+                              join sr in _context.SurveyResponses on sp.Id equals sr.SurveyParticipantId
+                              join r in _context.SurveyRoutes on sr.SurveyRouteId equals r.Id
+                              join o in _context.SurveyOption on sr.SurveyOptionId equals o.Id
+                              where sp.Id == participantId
+                              select new CombinedSurveyDataDTO
+                              {
+                                  SurveyParticipantId = sp.Id,
+                                  FirstName = sp.FirstName,
+                                  LastName = sp.LastName,
+                                  Email = sp.Email,
+                                  PhoneNumber = sp.PhoneNumber,
+                                  Occupation = sp.Occupation,
+                                  Age = sp.Age,
+                                  PresentMentalState = sp.PresentMentalState,
+                                  Timestamp = sr.Timestamp,
+                                  Latitude = sr.Latitude,
+                                  Longitude = sr.Longitude,
+                                  RouteName = r.RouteName,
+                                  OptionName = o.OptionName
+                              }).ToListAsync();
+            return data;
+        }
     }
 }

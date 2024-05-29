@@ -12,5 +12,6 @@ namespace Infrasturcture.Persistence.Service
         Task UpdateSurveyParticipantAsync(SurveyParticipant participant);
         Task DeleteSurveyParticipantAsync(int id);
         Task<IEnumerable<CombinedSurveyDataDTO>> GetAllCombinedSurveyDataAsync();
+        Task<IEnumerable<CombinedSurveyDataDTO>> GetByIdCombinedSurveyDataAsync(int participantId);
     }
 }
